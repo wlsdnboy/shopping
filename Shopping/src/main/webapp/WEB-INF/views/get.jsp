@@ -19,37 +19,33 @@
 	<div style="width: 60%; margin: auto;">
 		<form>
 
-			<div class="mb-3">
-				<label class="form-label"> 게시물 번호 </label> <input type="text"
-					class="form-control" name="bno"
-					value='<c:out value="${board.bno }"/>' readonly="readonly">
+			<table class="table mt-5">
+				<thead>
+					<tr>
+						<th scope="col"><c:out value="${board.title }" /></th>
 
-			</div>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th scope="col"><c:out value="${board.writer }" /></th>
 
+					</tr>
+					<tr>
+						<td scope="row"><c:out value="${board.content }" /></td>
 
-			<div class="mb-3">
-				<label class="form-label"> 제목 </label> <input type="text"
-					class="form-control" name="title"
-					value='<c:out value="${board.title }"/>' readonly="readonly">
+					</tr>
+					<tr>
+						<td style="border: none; float: right;"><button type="button"
+								class="btn btn-warning">
+								<a href="/modify?bno=${board.bno }">수정</a>
+							</button>
+							<button type="button" class="btn btn-dark"><a href="/list">목록</button></td>
 
-			</div>
-			<div class="mb-3">
-				<label class="form-label"> 작성자 </label> <input type="text"
-					class="form-control" name="writer"
-					value='<c:out value="${board.writer }"/>' readonly="readonly">
+					</tr>
+				</tbody>
+			</table>
 
-			</div>
-
-			<div class="mb-3">
-				 
-					
-					<c:out value="${fn:replace(board.content, IF, '<br/>') }" escapeXml="false" />
-					
-
-			</div>
-			<button class="btn btn-dark" style="float: right;">
-				<a href="/list">목록</a>
-			</button>
 
 		</form>
 	</div>
