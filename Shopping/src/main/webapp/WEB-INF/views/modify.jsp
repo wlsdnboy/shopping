@@ -7,23 +7,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<!-- include libraries(jQuery, bootstrap) -->
-<link
-	href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css"
-	rel="stylesheet">
-<script
-	src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
-<script
-	src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
-<!-- include summernote css/js-->
-<link
-	href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.css"
-	rel="stylesheet">
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.js"></script>
-<!-- include summernote-ko-KR -->
-<script src="/resources/js/summernote-ko-KR.js"></script>
-
 
 
 </head>
@@ -35,10 +18,11 @@
 	<br>
 
 	<div style="width: 70%; margin: auto;">
-		<form method="post" action="/modify">
+		<form role="form" method="post" action="/modify">
 
 			<div class="mb-3">
-				<label class="form-label">제목</label> <input type="text"
+				<input type="hidden" name=bno value="${board.bno }" /> <label
+					class="form-label">제목</label> <input type="text"
 					class="form-control" name="title" value="${board.title }">
 
 			</div>
@@ -58,12 +42,42 @@
 
 
 			<br />
-			<button type="submit" data-oper='modify' class="btn btn-success">Modify</button>
-			<button type="submit" data-oper='remove' class="btn btn-danger">Remove</button>
-			<button type="submit" data-oper='list' class="btn btn-info">List</button>
+			<div style="float: right;">
+				<button type="submit" data-oper='modify' class="btn btn-success">Modify</button>
+				<button type="submit" data-oper='remove' class="btn btn-danger">Remove</button>
+				<button type="submit" data-oper='list' class="btn btn-info">List</button>
+			</div>
 
+			<br /> <br />
 		</form>
 	</div>
+	<script>
+		$(document).ready(function() {
+			var formObj = $("form"); // 폼이라는 변수명을 가진 것들을 formObj에 넣는다
+			$('button').on("click", function(e) {
+				//버튼이 클릭된다면
+				e.preventDefault(); // 기본 동작을 막는다
+				var operation = $(this).data("oper");
+				//버튼에서 oper데이터를 읽어서 operation에 넣는다
+				console.log(operation) //operation 값을 출력
+
+				if (operation === 'remove') {
+					//operation 값이 remove라면
+					formObj.attr("action", "/remove");
+					//form의 액션 속성을 변경한다
+				} else if (operation === 'list') {
+					self.location = "/list";
+					return;
+				}
+				formObj.submit();
+			});
+
+		});
+	</script>
+
+
 
 </body>
+
+<%@ include file="includes/footer.jsp"%>
 </html>
