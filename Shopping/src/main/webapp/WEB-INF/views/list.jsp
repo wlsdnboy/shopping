@@ -53,53 +53,101 @@
 		</tbody>
 	</table>
 
-	<table>
-		<!-- 페이지네이션 -->
-		<tr>
-			<td>
-				<nav aria-label="Page navigation example">
-					<ul class="pagination justify-content-center">
-						<c:if test="${pageMaker.prev}">
-							<li class="page-item previous"><a
-								href="${pageMaker.startPage-1 }" class="page-link"> Prev</a></li>
-						</c:if>
+	<div style="width: 70%; margin: auto; margin-top: 10px;">
+		<button type="button" class="btn btn-dark regBtn">글쓰기</button>
 
-						<c:forEach var="num" begin="${pageMaker.startPage }"
-							end="${pageMaker.endPage }">
 
-							<li class='page-item ${pageMaker.cri.pageNum==num?"active":"" }'>
+		<div align="center">
+			<form id="searchForm" action="/list" method="get">
+				&nbsp;&nbsp;&nbsp;<select class="form-select"
+					aria-label="Default select example"
+					style="width: 10%; display: inline-block; position: relative; height: 36px; box-sizing: border-box; border: solid 1px; text-align: left; vertical-align: top;"
+					name="type">
+					<option value="" ${pageMaker.cri.type==null?"selected":"" }>
+						검색 타입</option>
+					<option value="T" ${pageMaker.cri.type eq "T"?"selected":"" }>
+						제목</option>
+					<option value="C" ${pageMaker.cri.type eq "C"?"selected":"" }>
+						내용</option>
+					<option value="W" ${pageMaker.cri.type eq "W"?"selected":"" }>
+						작성자</option>
+					<option value="TC" ${pageMaker.cri.type eq "TC"?"selected":"" }>
+						제목+내용</option>
 
-								<a href="${num }" class="page-link">${num }</a>
-							</li>
-						</c:forEach>
+				</select> <input type="text" class="form-control" name="keyword"
+					value="${pageMaker.cri.keyword }"
+					style="width: 20%; display: inline-block; position: relative; height: 36px; box-sizing: border-box; border: solid 1px; text-align: left; vertical-align: top;" />
+				<input type="hidden" name="pageNum"
+					value="${pageMaker.cri.pageNum }"> <input type="hidden"
+					name="amount" value="${pageMaker.cri.amount }">
 
-						<c:if test="${pageMaker.next }">
-							<li class="page-item next"><a href="${pageMaker.endPage+1 }"
-								class="page-link"> Next</a></li>
-						</c:if>
-					</ul>
-				</nav>
-			</td>
-		</tr>
+				<button class="btn btn-dark" id="searchBtn">Search</button>
+			</form>
+		</div>
+	</div>
 
-	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<!-- 페이지네이션 -->
+	<div style="width: 70%; margin: auto; margin-top: 10px;">
+		<nav aria-label="Page navigation example">
+			<ul class="pagination justify-content-center">
+				<c:if test="${pageMaker.prev}">
+					<li class="page-item previous"><a
+						href="${pageMaker.startPage-1 }" class="page-link"> Prev</a></li>
+				</c:if>
+
+				<c:forEach var="num" begin="${pageMaker.startPage }"
+					end="${pageMaker.endPage }">
+
+					<li class='page-item ${pageMaker.cri.pageNum==num?"active":"" }'>
+
+						<a href="${num }" class="page-link">${num }</a>
+					</li>
+				</c:forEach>
+
+				<c:if test="${pageMaker.next }">
+					<li class="page-item next"><a href="${pageMaker.endPage+1 }"
+						class="page-link"> Next</a></li>
+				</c:if>
+			</ul>
+		</nav>
+	</div>
+	<!-- 페이지네이션 -->
+
+
+
+
+
+
+
+
 
 	<!-- 페이지 이동시 정보 -->
 	<form id="actionForm" action="/list" method="get">
 		<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
 		<input type="hidden" name="amount" value="${pageMaker.cri.amount }">
-
+		<input type="hidden" name="type" value="${pageMaker.cri.type }">
+		<input type="hidden" name="keyword" value="${pageMaker.cri.keyword }">
 	</form>
 	<!-- 페이지 이동시 정보 -->
 
-	<table>
 
-		<tr>
-			<td><button type="button" class="btn btn-dark regBtn">글쓰기</button></td>
-		</tr>
-	</table>
-	<br />
+
+
 
 
 
@@ -195,12 +243,75 @@
 																+ $(this).attr(
 																		"href")
 																+ "'>");
-											//append는 요소 내부의 끝부분에 삽입한다
+												//append는 요소 내부의 끝부분에 삽입한다
 												actionForm.attr("action",
 														"/get")
 												actionForm.submit();
 
-											})
+											});
+
+							$("#searchBtn")
+									.on(
+											"click",
+											function(e) {
+												e.preventDefault();
+
+												var searchForm = $("#searchForm");
+												$("#searchForm button")
+														.on(
+																"click",
+																function(e) {
+																	if (!searchForm
+																			.find(
+																					"option:selected")
+																			.val()) {
+																		alert("검색 종류를 선택하세요");
+																		return false;
+
+																	}
+																	if (!searchForm
+																			.find(
+																					"input[name = 'keyword']")
+																			.val()) {
+																		alert("키워드를 입력하세요")
+																		return false;
+																	}
+																	searchForm
+																			.find(
+																					"input[name='pageNum']")
+																			.val(
+																					1);
+																	e
+																			.preventDefault();
+																	searchForm
+																			.submit();
+
+																});
+
+												var searchKeyword = $(
+														"input[name='keyword']")
+														.val();
+
+												var sKey = '<c:out value="${pageMaker.cri.keyword}"/>';
+
+												console.log("이전 검색어: " + sKey);
+												console.log("현재 검색어: "
+														+ searchKeyword);
+
+												if (sKey != searchKeyword) {
+													searchForm
+															.find(
+																	"input[name='pageNum']")
+															.val(1);
+												}
+												searchForm.submit();
+											});
+
+							var bno = actionForm.find("input[name='bno']")
+									.val();
+							if (bno != '') {
+								actionForm.find("input[name='bno']").remove();
+							}
 
 						});
 	</script>

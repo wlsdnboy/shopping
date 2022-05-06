@@ -19,6 +19,8 @@
 
 	<div style="width: 70%; margin: auto;">
 		<form role="form" method="post" action="/modify">
+			<input type="hidden" name="pageNum" value="${cri.pageNum }" /> <input
+				type="hidden" name="amount" value="${cri.amount }" />
 
 			<div class="mb-3">
 				<input type="hidden" name=bno value="${board.bno }" /> <label
@@ -66,8 +68,21 @@
 					formObj.attr("action", "/remove");
 					//form의 액션 속성을 변경한다
 				} else if (operation === 'list') {
-					self.location = "/list";
-					return;
+					var pageNumTag = $("input[name='pageNum']");
+					var amountTag = $("input[name='amount']");
+					var keywordTag = $("input[name='keyword']");
+					var typeTag = $("input[name='type']");
+					
+					formObj.attr("action" , "/list").attr("method" , "get");
+					
+					formObj.empty();
+					formObj.append(pageNumTag);
+					formObj.append(amountTag);
+					formObj.append(keywordTag);
+					formObj.append(typeTag);
+					
+					
+					
 				}
 				formObj.submit();
 			});

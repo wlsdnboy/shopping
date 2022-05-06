@@ -33,7 +33,11 @@ public class BoardController {
 	public void list(Model model, Criteria cri) {
 		log.info("list");
 		model.addAttribute("list", service.getList(cri));
-		model.addAttribute("pageMaker", new PageDTO(cri, 550));
+
+		int total = service.getTotalCount(cri);
+		log.info("total : " + total);
+		model.addAttribute("pageMaker", new PageDTO(cri, total));
+
 		// 과거 jsp에서는 request.setAttribute로 ArrayList를 전달했지만
 		// , 같은 역할을 model이 대신.
 		// 컨트롤러 >> 서비스 >> 매퍼 >> mybatis
@@ -60,33 +64,42 @@ public class BoardController {
 
 	@GetMapping({ "/get", "/modify" })
 	public void get(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, Model model) {
-		//@ModelAttribut("cri")는 자동으로 객체 할당 저장
-		//자동으로 설정된 Criteria cri를 모델 값으로 저장한다
-		//저장명이 cri
-		
+		// @ModelAttribut("cri")는 자동으로 객체 할당 저장
+		// 자동으로 설정된 Criteria cri를 모델 값으로 저장한다
+		// 저장명이 cri
+
 		log.info("/get");
-		
-		
-		
+
 		model.addAttribute("board", service.get(bno));
 	}
 
 	@PostMapping("/modify")
-	public String modify(BoardVO board, RedirectAttributes rttr) {
+	public String modify(BoardVO board, Criteria cri, RedirectAttributes rttr) {
 		log.info("modify" + board);
 		if (service.modify(board)) {
 			rttr.addFlashAttribute("result", "글 수정이 완료되었습니다");
+			rttr.addAttribute("pageNum", cri.getPageNum());
+			rttr.addAttribute("amount", cri.getAmount());
+
+			rttr.addAttribute("type", cri.getType());
+			rttr.addAttribute("keyword", cri.getKeyword());
 
 		}
 		return "redirect:/list";
 	}
 
 	@PostMapping("/remove")
-	public String remove(@RequestParam("bno") Long bno, RedirectAttributes rttr) {
+	public String remove(@RequestParam("bno") Long bno, Criteria cri, RedirectAttributes rttr) {
 		log.info("remove" + bno);
 		if (service.remove(bno)) {
 			rttr.addFlashAttribute("result", "글 삭제가 완료 되었습니다");
+
 		}
+		rttr.addAttribute("pageNum", cri.getPageNum());
+		rttr.addAttribute("amount", cri.getAmount());
+		rttr.addAttribute("type", cri.getType());
+		rttr.addAttribute("keyword", cri.getKeyword());
+
 		return "redirect:/list";
 
 	}
