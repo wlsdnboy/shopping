@@ -1,5 +1,7 @@
 package com.shop.domain;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.ToString;
 
@@ -11,6 +13,7 @@ public class PageDTO {
 	private boolean prev, next;
 	private int total; // 총 게시물수
 	private Criteria cri; // 현재 페이지와 페이지당 게시물 갯수
+
 
 	public PageDTO(Criteria cri, int total) {
 		this.cri = cri;

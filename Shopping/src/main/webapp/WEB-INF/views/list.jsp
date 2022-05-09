@@ -42,7 +42,11 @@
 				<tr>
 					<td><c:out value="${board.bno }" /></td>
 					<td><a href="${board.bno }" class="move"><c:out
-								value="${board.title }" /></a></td>
+								value="${board.title }" /> <c:if test="${board.replyCnt ne 0 }">
+								<span style="color: red;">[<c:out
+										value="${board.replyCnt }" />]
+								</span>
+							</c:if></a></td>
 					<td style="text-align: left;"><c:out value="${board.writer }" /></td>
 					<td style="text-align: left;"><fmt:formatDate
 							pattern="yyyy-MM-dd" value="${board.regdate }" /></td>
@@ -55,6 +59,7 @@
 
 	<div style="width: 70%; margin: auto; margin-top: 10px;">
 		<button type="button" class="btn btn-dark regBtn">글쓰기</button>
+
 
 
 		<div align="center">
