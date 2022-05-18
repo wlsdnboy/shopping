@@ -104,8 +104,6 @@
 
 
 
-
-
 	<!-- 페이지네이션 -->
 	<div style="width: 70%; margin: auto; margin-top: 10px;">
 		<nav aria-label="Page navigation example">
@@ -322,10 +320,10 @@
 	</script>
 
 
-	<%@ include file="includes/footer.jsp"%>
+
 </body>
 
-
+<%@ include file="includes/footer.jsp"%>
 
 
 </html>

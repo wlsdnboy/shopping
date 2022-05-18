@@ -52,4 +52,10 @@ and rownum <= #{cri.pageNum} * #{cri.amount}
 		tbl_reply where bno=#{bno}
 	</select>
 
+
+	<delete id="deleteAll">
+		delete from tbl_reply where bno = #{bno}
+
+
+	</delete>
 </mapper>

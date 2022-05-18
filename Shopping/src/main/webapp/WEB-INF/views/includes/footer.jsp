@@ -41,7 +41,7 @@
 					class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
 					<svg class="bi" width="30" height="24">
         </svg>
-				</a> <span class="text-muted">&copy; THISISNEVERTHAT</span>
+				</a> <span class="text-muted">&copy; JINWOOSHOP</span>
 			</div>
 
 			<ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
@@ -59,5 +59,16 @@
 	</div>
 
 	<script src="/resources/vendor/datatables/jquery.dataTables.js"></script>
+
+
+
+
 </body>
+
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+	crossorigin="anonymous">
+	
+</script>
 </html>

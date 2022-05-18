@@ -4,6 +4,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ include file="includes/navbar.jsp"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+
+
+
+
 <%
 	pageContext.setAttribute("LF", "\n");
 %>
@@ -39,17 +45,39 @@
 
 					</tr>
 					<tr>
-						<td style="border: none; float: right;">
-							<button data-oper="modify" id="boardModBtn" type="button"
-								class="btn btn-warning">
-								<a href="/modify?bno=${board.bno }">수정</a>
-							</button>
+						<td>
+
+
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="panel panel-default">
+										<div class="panel-heading">첨부파일</div>
+										<div class="panel-body">
+											<div class="uploadResult">
+												<ul></ul>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+					</tr>
+					<tr>
+						<td style="border: none; float: right;"><sec:authentication
+								property="principal" var="pinfo" /> <sec:authorize
+								access="isAuthenticated()">
+								<c:if test="${pinfo.username eq board.writer }">
+									<button data-oper="modify" id="boardModBtn" type="button"
+										class="btn btn-warning">
+										<a href="/modify?bno=${board.bno }">수정</a>
+									</button>
+								</c:if>
+							</sec:authorize>
+
 							<button data-oper="list" id="boardListBtn" type="button"
 								class="btn btn-dark">
 								<a href="/list?pageNum=${cri.pageNum }&amount=${cri.amount }">
 									목록 </a>
-							</button>
-						</td>
+							</button></td>
 
 					</tr>
 				</tbody>
@@ -81,14 +109,16 @@
 </svg>
 		댓글목록 <br /> <br />
 		<ul class="chat">
-			<li>An item</li>
+			<li></li>
 
 		</ul>
 		<br />
 		<div class="panel-footer"></div>
 		<br />
-		<button class="btn btn-dark btn-reply" style="float: right;">댓글
-			등록</button>
+		<sec:authorize access="isAuthenticated()">
+			<button class="btn btn-dark btn-reply" style="float: right;">댓글
+				등록</button>
+		</sec:authorize>
 
 		<br /> <br />
 	</div>
@@ -149,19 +179,24 @@ btndefault">닫기</button>
 		$(document)
 				.ready(
 						function() {
+							
+							var
+							csrfHeaderName="${_csrf.headerName}";
+							var csrfTokenValue="${_csrf.token}";
+							$(document).ajaxSend(function(e,xhr,options){
+							xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+							});
 
 							var operForm = $("#operForm");
 							/* 문서중 form 요소를 찾아서 변수에 할당. */
-							$('button[data-oper="modify"]')
-									.on(
-											"click",
-											function(e) {
-												/* 버튼이 클릭된다면 아래 함수 수행, e라는 이벤트 객체를
-												전달하면서 */
-												operForm.attr("action",
-														"/modify")
-														.submit();
-											});
+							$('button[data-oper="modify"]').on(
+									"click",
+									function(e) {
+										/* 버튼이 클릭된다면 아래 함수 수행, e라는 이벤트 객체를
+										전달하면서 */
+										operForm.attr("action", "/modify")
+												.submit();
+									});
 							$('button[data-oper="list"]').on(
 									"click",
 									function(e) {
@@ -200,6 +235,14 @@ btndefault">닫기</button>
 								formObj.submit();
 							});
 
+							
+							var bnoValue = '<c:out value="${board.bno}"/>';
+							
+							var replyer=null;
+								<sec:authorize access="isAuthenticated()">
+							replyer = '${pinfo.username}';
+							</sec:authorize>
+							
 							//console.log(replyService);
 							var modal = $("#myModal");
 							// 덧글 용 모달.
@@ -223,6 +266,11 @@ btndefault">닫기</button>
 											function(e) {
 												// 새덧글 버튼을 클릭한다면,
 												modal.find("input").val("");
+												
+												
+												modal.find("input[name='replyer']").val(replyer);
+												modal.find("input[name='replyer']").attr("readonly" , "readonly");
+												modalInputReplyDate.closest("div").hide();
 												// 모달의 모든 입력창을 초기화
 												modalInputReplyDate.closest(
 														"div").hide();
@@ -256,6 +304,9 @@ btndefault">닫기</button>
 									alert(result);
 									// ajax 처리후 결과 리턴.
 									modal.find("input").val("");
+									
+									
+									
 									// 모달창 초기화
 									modal.modal("hide");// 모달창 숨기기
 
@@ -378,8 +429,12 @@ btndefault">닫기</button>
 							$(".chat")
 									.on(
 											"click",
+											"li",
 											function(e) {
+												//클래스 chat 을 클릭하는데, 하위 요소가 li라면,
+												var originalReplyer = modalInputReplyer.val();
 												var rno = $(this).data("rno");
+												// 덧글에 포함된 값들 중에서 rno를 추출하여 변수 할당.
 												console.log(rno);
 
 												replyService
@@ -387,7 +442,7 @@ btndefault">닫기</button>
 																rno,
 																function(reply) {
 																	modalInputReply
-																			.val(reply.reply)
+																			.val(reply.reply);
 																	modalInputReplyer
 																			.val(reply.replyer);
 																	modalInputReplyDate
@@ -397,12 +452,12 @@ btndefault">닫기</button>
 																			.attr(
 																					"readonly",
 																					"readonly");
-
+																	// 댓글 목록의 값들을 모달창에 할당.
 																	modal
 																			.data(
 																					"rno",
 																					reply.rno);
-
+																	// 표시되는 모달창에 rno 라는 이름으로 data-rno를 저장.
 																	modal
 																			.find(
 																					"button[id !='modalCloseBtn']")
@@ -411,21 +466,37 @@ btndefault">닫기</button>
 																			.show();
 																	modalRemoveBtn
 																			.show();
-
+																	// 버튼 보이기 설정.
 																	$(
 																			"#myModal")
 																			.modal(
 																					"show");
-
 																});
-
-											});
+											}); // 끝_덧글 읽기.
 
 							modalModBtn.on("click", function(e) {
+								var originalReplyer =
+									modalInputReplyer.val();
+
 								var reply = {
 									rno : modal.data("rno"),
-									reply : modalInputReply.val()
+									reply : modalInputReply.val(),
+									replyer : originalReplyer
 								};
+								
+								if(!replyer){
+									alert("로그인후 수정 가능");
+									modal.modal("hide");
+									return;
+								}
+								if(replyer != originalReplyer){
+									alert("자신이 작성한 댓글만 수정 가능");
+									modal.modal("hide");
+									return;
+								
+								}
+									
+									
 								replyService.update(reply, function(result) {
 									alert(result);
 									modal.modal("hide");
@@ -435,12 +506,77 @@ btndefault">닫기</button>
 
 							modalRemoveBtn.on("click", function(e) {
 								var rno = modal.data("rno");
-								replyService.remove(rno, function(result) {
+								var originalReplyer =
+									modalInputReplyer.val();
+									if(!replyer){
+									alert("로그인후 삭제 가능");
+									modal.modal("hide");
+									return;
+									}
+									if(replyer != originalReplyer){
+									alert("자신이 작성한 댓글만 삭제 가능");
+									modal.modal("hide");
+									return;
+									}
+
+								replyService.remove(rno,originalReplyer, function(result) {
 									alert(result);
 									modal.modal("hide");
 									showList(-1);
 								});
 							});
+
+							(function() {
+								var bno = '<c:out value="${board.bno}"/>';
+								$
+										.getJSON(
+												"/getAttachList",
+												{
+													bno : bno
+												},
+												function(arr) {
+													console.log(arr);
+													var str = "";
+
+													$(arr)
+															.each(
+																	function(i,
+																			attach) {
+																		str += "<li data-path='";
+										str+=attach.uploadPath+"'data-uuid='";
+										str+=attach.uuid+"' data-filename='";
+										str+=attach.fileName+"' data-type='";
+										str+=attach.fileType+"'><div>";
+																		str += "<img src='/resources/img/attach.png'  width='20' height='20'>";
+																		str += "<span>"
+																				+ attach.fileName
+																				+ "</span><br/> ";
+																		str += "</div></li>";
+
+																	});
+													$(".uploadResult ul").html(
+															str);
+
+												});
+							})();
+
+							$(".uploadResult")
+									.on(
+											"click",
+											"li",
+											function(e) {
+												console.log("download file");
+												var liObj = $(this);
+												var path = encodeURIComponent(liObj
+														.data("path")
+														+ "/"
+														+ liObj.data("uuid")
+														+ "_"
+														+ liObj
+																.data("filename"));
+												self.location = "/download?fileName="
+														+ path;
+											});
 
 						});
 	</script>

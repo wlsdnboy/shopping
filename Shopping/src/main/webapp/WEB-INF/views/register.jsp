@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ include file="includes/navbar.jsp"%>
 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +17,10 @@
 	<br>
 
 	<div style="width: 70%; margin: auto;">
-		<form method="post" action="/register">
+		<form role="form" method="post" action="/register">
+			<input type="hidden" name="${_csrf.parameterName }"
+				value="${_csrf.token}" />
+
 
 			<div class="mb-3">
 				<label class="form-label"> 제목 </label> <input type="text"
@@ -25,7 +29,10 @@
 			</div>
 			<div class="mb-3">
 				<label class="form-label"> 작성자 </label> <input type="text"
-					class="form-control" name="writer">
+					class="form-control" name="writer"
+					value='<sec:authentication property
+="principal.username"/>'
+					readonly="readonly">
 
 			</div>
 
@@ -60,21 +67,69 @@
 	</div>
 
 	<br />
+	
+	
 	<script>
 		$(document)
 				.ready(
 						function(e) {
 							var formObj = $("form[role='form']");
-							$("button[type='submit']").on("click", function(e) {
-								e.preventDefault();
-								console.log("submit clicked");
-							});
-							var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
-							// 정규표현식. 일부 파일의 업로드 제한.
-							//
 
-							// https://regexper.com/
-							var maxSize = 5242880; // 5MB
+							$("button[type='submit']")
+									.on(
+											"click",
+											function(e) {
+
+												e.preventDefault();
+
+												console.log("submit clicked");
+
+												var str = "";
+												$(".uploadResult ul li")
+														.each(
+																function(i, obj) {
+																	var jobj = $(obj);
+																	console
+																			.dir(jobj);
+																	console
+																			.dir()
+																	console
+																			.log("-----------------");
+																	console
+																			.log(jobj
+																					.data("filename"));
+																	str += "<input type='hidden' name='attachList[";
+																	str += i
+																			+ "].fileName' value='"
+																			+ jobj
+																					.data("filename");
+																	str += "'>";
+																	str += "<input type='hidden' name='attachList[";
+																	str += i
+																			+ "].uuid' value='"
+																			+ jobj
+																					.data("uuid");
+																	str += "'>";
+																	str += "<input type='hidden' name='attachList[";
+																	str += i
+																			+ "].uploadPath' value='"
+																			+ jobj
+																					.data("path");
+																	str += "'>";
+																	str += "<input type='hidden' name='attachList[";
+																	str += i
+																			+ "].fileType' value='"
+																			+ jobj
+																					.data("type");
+																	str += "'>";
+																});
+												formObj.append(str).submit();
+
+											});
+							var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
+
+							var maxSize = 5242880;
+
 							function checkExtension(fileName, fileSize) {
 								if (fileSize >= maxSize) {
 									alert("파일 크기 초과");
@@ -86,12 +141,17 @@
 								}
 								return true;
 							}
+							var csrfHeaderName = "${_csrf.headerName}";
+							var csrfTokenValue = "${_csrf.token}";
+
 							$("input[type='file']")
 									.change(
 											function(e) {
+
 												var formData = new FormData();
 												var inputFile = $("input[name='uploadFile']");
 												var files = inputFile[0].files;
+
 												for (var i = 0; i < files.length; i++) {
 													if (!checkExtension(
 															files[i].name,
@@ -102,6 +162,7 @@
 															"uploadFile",
 															files[i]);
 												}
+
 												$
 														.ajax({
 															url : '/uploadAjaxAction',
@@ -110,6 +171,13 @@
 															data : formData,
 															type : 'POST',
 															dataType : 'json',
+															beforeSend : function(
+																	xhr) {
+																xhr
+																		.setRequestHeader(
+																				csrfHeaderName,
+																				csrfTokenValue);
+															},
 															success : function(
 																	result) {
 																console
@@ -118,18 +186,16 @@
 															}
 														});
 											});
+
 							function showUploadResult(uploadResultArr) {
 								if (!uploadResultArr
 										|| uploadResultArr.length == 0) {
-									// json 처리 결과가 없다면 함수 종료.
+
 									return;
 								}
 								var uploadUL = $(".uploadResult ul");
 								var str = "";
 
-								// each 구문은 전달된 배열의 길이 만큼, 
-								// each 이후의 함수를 반복 처리.
-								// https://api.jquery.com/jQuery.each/#jQuery-each-array-callback
 								$(uploadResultArr)
 										.each(
 												function(i, obj) {
@@ -138,59 +204,56 @@
 															+ obj.uuid
 															+ "_"
 															+ obj.fileName);
-													// encodeURIComponent : 
-													// uri 로 전달되는 특수문자의 치환.
-													// & ?
+
 													var fileLink = fileCallPath
 															.replace(
 																	new RegExp(
 																			/\\/g),
 																	"/");
-													// 전달되는 값들 중에서 역슬러시를 찾아서 슬러시로 변경.
 
 													str += "<li data-path='";
-					str += obj.uploadPath+"' data-uuid='";
-					str += obj.uuid+"' data-filename='";
-					str += obj.fileName+"' data-type='";
-					str += obj.image+"'><div>";
+	str += obj.uploadPath+"' data-uuid='";
+	str += obj.uuid+"' data-filename='";
+	str += obj.fileName+"' data-type='";
+	str += obj.image+"'><div>";
 													str += "<img src='/resources/img/attach.png' width='20' height='20'>";
-													str += " <span>"
+													str += "<span>"
 															+ obj.fileName
 															+ "</span> ";
 													str += "<b data-file='"+fileCallPath;
-					str += "' data-type='file'>[x]</b>";
+	str += "' data-type='file'>[x]</b>";
 													str += "</div></li>";
 												});
 								uploadUL.append(str);
 							}// end_showUploadResult
-							// 첨부파일 목록 끝.
+							$(".uploadResult").on(
+									"click",
+									"b",
+									function(e) {
+										console.log("delete file");
+										var targetFile = $(this).data("file");
+										var type = $(this).data("type");
+										var targetLi = $(this).closest("li");
+										$.ajax({
+											url : '/deleteFile',
+											data : {
+												fileName : targetFile,
+												type : type
+											},
+											beforeSend : function(xhr) {
+												xhr.setRequestHeader(
+														csrfHeaderName,
+														csrfTokenValue);
+											},
 
-							// 첨부파일 목록에서 삭제 처리 이벤트 시작.
-							$(".uploadResult").on("click", "b", function(e) {
-								// 첨부파일 목록에서 삭제[x]을 클릭한다면,
-								console.log("delete file");
-
-								var targetFile = $(this).data("file");// data-file
-								var type = $(this).data("type");// data-type
-								var targetLi = $(this).closest("li");// 선택한 첨부파일
-
-								$.ajax({
-									url : '/deleteFile',
-									data : {
-										fileName : targetFile,
-										type : type
-									},
-									dataType : 'text',
-									type : 'POST',
-
-									success : function(result) {
-										alert(result);
-										targetLi.remove();
-									}
-								});
-							});
-							// 첨부파일 목록에서 삭제 처리 이벤트 끝.
-
+											dataType : 'text',
+											type : 'POST',
+											success : function(result) {
+												alert(result);
+												targetLi.remove();
+											}
+										})
+									});
 						});
 	</script>
 </body>

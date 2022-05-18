@@ -4,10 +4,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.shop.domain.BoardAttachVO;
 import com.shop.domain.BoardVO;
 import com.shop.domain.Criteria;
+import com.shop.mapper.BoardAttachMapper;
 import com.shop.mapper.BoardMapper;
+import com.shop.mapper.ReplyMapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Setter;
@@ -21,10 +25,26 @@ public class BoardServiceImp implements BoardService {
 	@Setter(onMethod_ = @Autowired)
 	private BoardMapper mapper;
 
+	@Setter(onMethod_ = @Autowired)
+	private BoardAttachMapper attachMapper;
+
+	@Setter(onMethod_ = @Autowired)
+	private ReplyMapper replyMapper;
+
+	@Transactional
 	@Override
 	public void register(BoardVO board) {
 		log.info("register......" + board);
 		mapper.insertSelectKey(board);
+
+		if (board.getAttachList() == null || board.getAttachList().size() <= 0) {
+			return;
+		}
+		board.getAttachList().forEach(attach -> {
+			attach.setBno(board.getBno());
+			attachMapper.insert(attach);
+		});
+
 	}
 
 	@Override
@@ -33,15 +53,40 @@ public class BoardServiceImp implements BoardService {
 		return mapper.read(bno);
 	}
 
+	@Transactional
 	@Override
 	public boolean modify(BoardVO board) {
 		log.info("modify......" + board);
-		return mapper.update(board) == 1;
+		boolean modifyResult = false; // 게시물 수정 성공 여부.
+		modifyResult = mapper.update(board) == 1;
+		int attachList = 0;// 첨부파일 갯수.
+		if (board.getAttachList() != null) {
+			attachList = board.getAttachList().size();
+		}
+		long bno = board.getBno();
+		attachMapper.deleteAll(bno);
+		if (modifyResult && attachList > 0) {
+			// 등록하려는 첨부파일 목록(11,22)
+			List<BoardAttachVO> inputList = board.getAttachList();
+			// 디비에 등록되어 있는 첨부파일 목록(22,33)
+//			// List<BoardAttachVO> dbList =
+//			attachMapper.findByBno(board.getBno());
+			// 파일은 삭제 했어도, 디비 정보가 남아 있는 부분을 해소.
+			for (BoardAttachVO bav : inputList) {
+				bav.setBno(bno);
+				attachMapper.insert(bav);
+			}
+		}
+		return modifyResult;
 	}
 
+	@Transactional
 	@Override
 	public boolean remove(Long bno) {
 		log.info("remove......" + bno);
+		attachMapper.deleteAll(bno);
+		replyMapper.deleteAll(bno);
+
 		return (mapper.delete(bno)) == 1;
 	}
 
@@ -55,6 +100,12 @@ public class BoardServiceImp implements BoardService {
 	public int getTotalCount(Criteria cri) {
 		log.info("get total count");
 		return mapper.getTotalCount(cri);
+	}
+
+	@Override
+	public List<BoardAttachVO> getAttachList(Long bno) {
+		log.info("get Attach list by bno: " + bno);
+		return attachMapper.findByBno(bno);
 	}
 
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 암호화 처리, 사용자 계정 정보 처리 -->
+	<bean id="bcryptPasswordEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	<!-- BCrypt 암호화 객체 생성. -->
+	<bean id="customUserDetailsService"
+		class="com.shop.security.CustomUserDetailsService" />
+	<!-- 아이디 패스워드로 로그인 처리 객체 -->
+
+	<security:http><!-- 웹 접근에 대해서, -->
+		<security:form-login login-page="/customLogin" />
+		<!-- 로그인 처리 url 지정. -->
+		<security:logout logout-url="/customLogout"
+			invalidate-session="true" /><!-- 로그아웃 url 지정과 세션의 만료 처리. -->
+	</security:http>
+
+	<security:authentication-manager><!-- 인증 처리 관리자, -->
+		<security:authentication-provider
+			user-service-ref="customUserDetailsService"><!-- 인증처리 공급자, -->
+			<security:password-encoder
+				ref="bcryptPasswordEncoder" />
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+</beans>
