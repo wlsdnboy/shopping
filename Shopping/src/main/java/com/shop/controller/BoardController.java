@@ -21,8 +21,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.shop.domain.BoardAttachVO;
 import com.shop.domain.BoardVO;
 import com.shop.domain.Criteria;
+import com.shop.domain.MemberVO;
 import com.shop.domain.PageDTO;
 import com.shop.service.BoardService;
+import com.shop.service.MemberService;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -32,6 +34,7 @@ import lombok.extern.log4j.Log4j;
 @RequestMapping("/*")
 @AllArgsConstructor
 public class BoardController {
+	private MemberService member;
 	private BoardService service;
 
 	/*
@@ -76,7 +79,16 @@ public class BoardController {
 
 	@GetMapping("/signUp")
 	public void signUp() {
-		
+
+	}
+
+	@PostMapping("/signUp")
+	public String newSignUp(MemberVO vo, RedirectAttributes rttr) {
+
+		log.info("signup ");
+		member.register(vo);
+
+		return "redirect:/customLogin";
 	}
 
 	@GetMapping("/register")
