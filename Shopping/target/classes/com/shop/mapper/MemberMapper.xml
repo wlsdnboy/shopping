@@ -14,6 +14,9 @@
 		<result property="userid" column="userid" />
 		<result property="userpw" column="userpw" />
 		<result property="userName" column="username" />
+		<result property="useremail" column="useremail" />
+		<result property="useraddress" column="useraddress" />
+		<result property="userphoneNumber" column="userphoneNumber" />
 		<result property="regDate" column="regdate" />
 		<result property="updateDate" column="updatedate" />
 		<collection property="authList" resultMap="authMap" />
@@ -21,12 +24,15 @@
 
 	<select id="read" resultMap="memberMap">
 		select
-		mem.userid, userpw, username,
-		enabled, regdate, updatedate, auth
+		mem.userid, userpw, username
+		,useremail,
+		useraddress, userphoneNumber,
+		enabled, regdate, updatedate,
+		mem.auth
 		from
-		tbl_member mem left outer join
-		tbl_member_auth auth on mem.userid=auth.userid
-		where mem.userid=
+		tbl_member mem
+		where
+		mem.userid=
 		#{userid}
 	</select>
 
@@ -37,5 +43,27 @@
 		#{useremail},#{useraddress},#{userphoneNumber})
 
 	</insert>
+
+
+	<update id="updateMember">
+		update tbl_member set username=#{userName},
+		userpw=#{userpw}, useremail=#{useremail}, useraddress=#{useraddress},
+		userphonenumber=#{userphoneNumber}
+		where userid=#{userid}
+
+
+	</update>
+
+	<delete id="deleteMember">
+		delete from tbl_member where userid=#{userid}
+
+	</delete>
+
+
+	<select id="idCheck" resultType="int">
+		select
+		count(*) from tbl_member
+		where userid = #{userid}
+	</select>
 
 </mapper>

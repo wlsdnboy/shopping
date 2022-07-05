@@ -37,4 +37,20 @@
 	<security:global-method-security
 		pre-post-annotations="enabled" secured-annotations="enabled" />
 
+	<!-- 업로드 패스 설정 -->
+	<beans:bean class="java.lang.String" id="uploadPath">
+		<beans:constructor-arg
+			value="C:\Users\user\Documents\work_example\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\Shopping\resources" />
+	</beans:bean>
+
+	<!-- 일반 파일 업로드 경로 -->
+	<resources mapping="/imgUpload/**"
+		location="/resources/imgUpload/" />
+
+
+
+
+	<!-- 대체 이미지 경로 -->
+	<resources mapping="/images/**" location="/resources/images/" />
 </beans:beans>
+

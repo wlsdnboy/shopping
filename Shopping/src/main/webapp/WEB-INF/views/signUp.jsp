@@ -18,12 +18,11 @@
 
 
 
-
 <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
 <script src="/resources/vendor/jquery/jquery.min.js"></script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script src="/resources/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <style>
 .bd-placeholder-img {
@@ -39,127 +38,130 @@
 		font-size: 3.5rem;
 	}
 }
+
+video {
+	position: fixed;
+	top: 0;
+	left: 0;
+	min-width: 100%;
+	min-height: 100%;
+	width: auto;
+	height: auto;
+	z-index: -1;
+}
+
+.id_ok {
+	color: #fff;
+	display: none;
+}
+
+.id_already {
+	color: #6A82FB;
+	display: none;
+}
 </style>
 
 
 <!-- Custom styles for this template -->
 <link href="/resources/css/form-validation.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body>
 
-	<div class="container">
+	<video class="video-container" autoplay muted loop>
+		<source src="resources/img/thisisneverthat® Pokémon Collection Ⅱ.mp4">
+	</video>
 
-		<div class="py-5 text-center">
-
-			<h2>JINWOOSHOP</h2>
-			<p class="lead">안녕하세요 JINWOOSHOP입니다</p>
-		</div>
-
-
-		<div class="">
-			<h4 class="mb-3 text-center">회원가입</h4>
-			<form class="needs-validation" action="/signUp" method="post"
-				novalidate>
-				<input type="hidden" name="${_csrf.parameterName }"
-					value="${_csrf.token}" />
+	<div class="modal modal-signin  modal fade" tabindex="-1" role="dialog"
+		id="modalSignin">
 
 
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content rounded-5 shadow">
+				<div class="modal-header p-5 pb-4 border-bottom-0">
+					<!-- <h5 class="modal-title">Modal title</h5> -->
+					<h2 class="fw-bold mb-0">JINWOO SHOP</h2>
 
-				<div class="col-12">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-						fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
-  <path
-							d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
-</svg>
-					<label for="name" class="form-label">이름</label> <input type="text"
-						class="form-control" id="userName" name="userName"
-						placeholder="이름" required>
-
-					<div class="invalid-feedback">이름을 입력해주세요</div>
+					<a href="/customLogin">
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</a>
 				</div>
 
 
+				<div class="modal-body p-5 pt-0">
+					<form method="post" action="/signUp" class="mymodal">
+						<input type="hidden" name="${_csrf.parameterName }"
+							value="${_csrf.token}" />
+						<div class="form-floating mb-3">
+
+							<input type="text" class="form-control rounded-4" id="userName"
+								placeholder="이름" name="userName"> <label
+								for="floatingInput">이름</label>
+							<div class="invalid-feedback">이름을 입력해주세요</div>
+						</div>
+
+						<div class="form-floating ">
+							<input type="text" class="form-control rounded-4" id="userid"
+								placeholder="아이디" name="userid"> <label
+								for="floatingPassword">아이디</label> <span class="id_ok">사용
+								가능한 아이디입니다.</span> <span class="id_already">누군가 이 아이디를 사용하고 있어요.</span>
+						</div>
+
+						<button class="idChk btn btn-dark mt-3 mb-3" type="button"
+							id="idChk" onclick="idCheck();" value="N">중복확인</button>
 
 
-				<div class="col-12">
-					<label for="username" class="form-label">아이디</label>
-					<div class="input-group has-validation">
-						<input type="text" class="form-control" id="userid" name="userid"
-							placeholder="아이디" required>
 
-						<div class="invalid-feedback">아이디를 입력해주세요</div>
-					</div>
+						<div class="form-floating">
+							<input type="password" class="form-control rounded-4" id="userpw"
+								placeholder="비밀번호" name="userpw"> <label
+								for="floatingPassword">비밀번호</label>
+							<div class="invalid-feedback">비밀번호를 입력해주세요</div>
+						</div>
+
+						<div class="form-floating mb-3">
+							<input type="password" class="form-control rounded-4"
+								id="passwordConfirm" placeholder="비밀번호 확인"> <label
+								for="floatingPassword">비밀번호 확인</label>
+							<div class="invalid-feedback">비밀번호를 입력해주세요</div>
+						</div>
+
+						<div class="form-floating ">
+							<input type="email" class="form-control rounded-4" id="useremail"
+								name="useremail" placeholder="이메일"> <label
+								for="floatingPassword">이메일</label>
+							<div class="invalid-feedback">이메일을 입력해주세요</div>
+						</div>
+
+						<div class="form-floating ">
+							<input type="text" class="form-control rounded-4"
+								id="useraddress" name="useraddress" placeholder="주소"> <label
+								for="floatingPassword">주소</label>
+							<div class="invalid-feedback">주소를 입력해주세요</div>
+						</div>
+
+						<div class="form-floating mb-5 ">
+							<input type="number" class="form-control rounded-4"
+								id="userphoneNumber" name="userphoneNumber" placeholder="번호">
+							<label for="floatingPassword">번호</label>
+							<div class="invalid-feedback">번호를 입력해주세요</div>
+						</div>
+
+
+						<button class="w-100 btn btn-dark btn-lg testCheck"
+							disabled="disabled">회원가입</button>
+
+
+
+
+					</form>
 				</div>
-
-
-
-
-
-				<div class="col-12">
-					<label for="username" class="form-label">패스워드</label>
-					<div class="input-group has-validation">
-						<input type="password" class="form-control" id="userpw"
-							name="userpw" placeholder="비밀번호" required>
-
-						<div class="invalid-feedback">비밀번호를 입력해주세요</div>
-					</div>
-				</div>
-
-
-				<div class="col-12">
-					<label for="username" class="form-label">패스워드 확인</label>
-					<div class="input-group has-validation">
-						<input type="password" class="form-control" id="passwordConfirm"
-							placeholder="비밀번호" required>
-
-					</div>
-				</div>
-
-
-
-
-				<div class="col-12">
-					<label for="email" class="form-label">Email</label> <input
-						type="email" class="form-control" id="useremail" name="useremail"
-						placeholder="you@example.com" required>
-					<div class="invalid-feedback">이메일을 입력해주세요</div>
-				</div>
-
-				<div class="col-12">
-					<label for="address" class="form-label">주소</label> <input
-						type="text" class="form-control" id="useraddress"
-						name="useraddress" placeholder="주소" required>
-					<div class="invalid-feedback">주소를 입력해 주세요</div>
-				</div>
-
-
-				<div class="col-12">
-					<label for="address" class="form-label">번호</label> <input
-						type="text" class="form-control" id="userphoneNumber"
-						name="userphoneNumber" placeholder="번호" required>
-					<div class="invalid-feedback">핸드폰 번호를 입력해 주세요</div>
-				</div>
-
-
-
-
-				<hr class="my-4">
-
-				<button class="w-100 btn btn-primary btn-lg testCheck">Continue
-					to checkout</button>
-			</form>
+			</div>
 		</div>
 	</div>
 
 
-	<footer class="my-5 pt-5 text-muted text-center text-small">
-		<p class="mb-1">&copy; 2017–2021 Company Name</p>
-		<ul class="list-inline">
-			<li class="list-inline-item"><a href="#">Privacy</a></li>
-			<li class="list-inline-item"><a href="#">Terms</a></li>
-			<li class="list-inline-item"><a href="#">Support</a></li>
-		</ul>
-	</footer>
+
 
 	<script>
 		var phoneNumberReg = /^[0-9]+$/;
@@ -169,28 +171,86 @@
 				var password = $("#userpw").val(); // 비밀번호값 불러오기
 				var passwordConfirm = $("#passwordConfirm").val(); // 비밀번호 확인값 불러오기
 
-				if (!phoneNumberReg.test($("#userphoneNumber").val())) {
-					alert("숫자만 입력 가능합니다");
-					$("#userphoneNumber").val("");
+				if ($("#userid").val() == "") {
+					swal("아이디를 입력해주세요.");
+					return false;
+				}
 
+				if ($("#userName").val() == "") {
+					swal("이름을 입력해주세요.");
+					return false;
+				}
+
+				if ($("#userpw").val() == "") {
+					swal("비밀번호를 입력해주세요.");
+					return false;
+				}
+
+				if ($("#useraddress").val() == "") {
+					swal("주소를 입력해주세요.");
+					return false;
+				}
+
+				if ($("#useremail").val() == "") {
+					swal("이메일을 입력해주세요.");
+					return false;
+				}
+				if ($("#userphoneNumber").val() == "") {
+					swal("핸드폰 번호를 입력해주세요.");
+					return false;
 				}
 
 				if (password != passwordConfirm) {
-					alert("비밀번호가 일치하지 않습니다  다시 입력해 주세요");
+					swal("비밀번호가 일치하지 않습니다  다시 입력해 주세요");
 					$("#userpw").val("");
 					$("#passwordConfirm").val("");
 
-					return;
+					return false;
 				}
-
+				swal("회원가입 완료!", "JINWOO SHOP에 오신것을 환영합니다", "success");
 				$("testCheck").submit();
 
 			});
 
 		});
 	</script>
+	<script>
+		$(document).ready(function() {
+
+			$("#modalSignin").modal("show");
+
+		});
+	</script>
 
 
+	<script>
+		var csrfHeaderName = "${_csrf.headerName}";
+		var csrfTokenValue = "${_csrf.token}";
+		function idCheck() {
+			$.ajax({
+				url : "/idCheck",
+				type : "post",
+				dataType : "json",
+				data : {
+					"userid" : $("#userid").val()
+				},
+				beforeSend : function(xhr) {
+					xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+				},
+				success : function(data) {
+					if (data == 1) {
+						swal("중복 아이디", "중복된 아이디 입니다", "error");
+
+					} else if (data == 0) {
+						$("#idChk").attr("value", "Y");
+						swal("사용 가능한 아이디 입니다")
+						$(".testCheck").removeAttr("disabled");
+					}
+				}
+
+			})
+		}
+	</script>
 
 	<script src="/resources/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 

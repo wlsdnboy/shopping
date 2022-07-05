@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ include file="includes/navbar.jsp"%>
+<%@ include file="includes/shopdetailnavbar.jsp"%>
 <%@ taglib uri="http://www.springframework.org/security/tags"
 	prefix="sec"%>
 <!doctype html>
@@ -112,10 +112,10 @@ a:hover {
 		<button class="btn btn-dark btn-reply" style="float: right;">댓글
 			등록</button>
 	</sec:authorize>
-	
+
 	<br>
 	<br>
-	
+
 
 
 </body>

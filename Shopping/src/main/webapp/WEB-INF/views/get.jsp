@@ -31,6 +31,8 @@
 					<tr>
 						<th scope="col"><c:out value="${board.title }" /></th>
 
+
+
 					</tr>
 				</thead>
 				<tbody>

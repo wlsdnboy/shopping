@@ -30,53 +30,27 @@
 
 </head>
 <body>
-	<div class="container">
-		<header
-			class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-			<a href="/index"
-				class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
-					JINWOOSHOP 
-			</a>
+	<nav class="navbar navbar-expand-lg navbar-dark  rounded"
+		style="background: black;" aria-label="Twelfth navbar example">
+		<div class="container-fluid">
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarsExample10"
+				aria-controls="navbarsExample10" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
 
-			<ul
-				class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-				<li><a href="#" class="nav-link px-2 link-dark">Home</a></li>
-				<li><a href="#" class="nav-link px-2 link-dark">Features</a></li>
-				<li><a href="#" class="nav-link px-2 link-dark">Pricing</a></li>
-				<li><a href="#" class="nav-link px-2 link-dark">FAQs</a></li>
-				<li><a href="#" class="nav-link px-2 link-dark">About</a></li>
-			</ul>
+			<div class="collapse navbar-collapse justify-content-md-center"
+				id="navbarsExample10">
+				<ul class="navbar-nav">
+					<li class="nav-item"><a class="nav-link active"
+						aria-current="page" href="/index"><b>JINWOOSHOP</b></a></li>
 
-			<div class="dropdown text-end">
-				<a href="#"
-					class="d-block link-dark text-decoration-none dropdown-toggle"
-					id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-					<img src="https://github.com/mdo.png" alt="mdo" width="32"
-					height="32" class="rounded-circle">
-				</a>
-				<ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-					<li><a class="dropdown-item" href="#"><sec:authorize
-								access="isAuthenticated()">
-								<sec:authentication property="principal.username" />
-							</sec:authorize> <sec:authorize access="isAnonymous()">
-							</sec:authorize></a></li>
-					<li><sec:authorize access="isAuthenticated()">
-							<a class="dropdown-item" href="/customLogout"> <i
-								class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-								Logout
-							</a>
-						</sec:authorize> <sec:authorize access="isAnonymous()">
-							<a class="dropdown-item" href="/customLogin"> <i
-								class="fas-fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400">
-
-							</i> Login
-							</a>
-
-						</sec:authorize></li>
 				</ul>
 			</div>
-		</header>
-	</div>
+		</div>
+	</nav>
+
 
 	<%-- <header class="p-3 mb-3 border-bottom">
 		<div class="container">

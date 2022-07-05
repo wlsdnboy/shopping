@@ -60,7 +60,7 @@
 
 	<script src="/resources/vendor/datatables/jquery.dataTables.js"></script>
 
-
+	
 
 
 </body>

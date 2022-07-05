@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/security/tags"
 	prefix="sec"%>
 
@@ -29,59 +29,11 @@
 	rel="stylesheet">
 
 </head>
+<link
+	href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic"
+	rel="stylesheet" type="text/css" />
 <body>
-	<%-- <nav class="navbar navbar-expand-lg navbar-white bg-white">
-		<div class="container-fluid">
-			<a class="navbar-brand" href="/index">JINWOOSHOP</a>
-			<button class="navbar-toggler" type="button"
-				data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-				aria-controls="navbarNavDropdown" aria-expanded="false"
-				aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="" id="navbarNavDropdown">
-				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link" aria-current="page"
-						href="/shopdetail">상품목록</a></li>
-					<li class="nav-item"><a class="nav-link" href="/list">게시판</a></li>
-					<li class="nav-item dropdown"><a
-						class="nav-link dropdown-toggle" href="#"
-						id="navbarDropdownMenuLink" role="button"
-						data-bs-toggle="dropdown" aria-expanded="false">계정</a>
-						<ul class="dropdown-menu">
 
-
-							<li><a class="dropdown-item" href="#scrollspyHeading3"><sec:authorize
-										access="isAuthenticated()">
-										<sec:authentication property="principal.username" />
-									</sec:authorize> <sec:authorize access="isAnonymous()">
-									</sec:authorize></a></li>
-
-							<li><hr class="dropdown-divider"> <sec:authorize
-									access="isAuthenticated()">
-									<a class="dropdown-item" href="/customLogout"> <i
-										class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-										Logout
-									</a>
-								</sec:authorize> <sec:authorize access="isAnonymous()">
-									<a class="dropdown-item" href="/customLogin"> <i
-										class="fas-fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400">
-
-									</i> Login
-									</a>
-
-								</sec:authorize></li>
-							<li><a class="dropdown-item" href="#scrollspyHeading5">Fifth</a></li>
-						</ul>
-					<li class="nav-item"><a class="nav-link" href="#">STORY</a></li>
-
-
-
-
-				</ul>
-			</div>
-		</div>
-	</nav> --%>
 
 	<header class="p-3 mb-3 border-bottom">
 		<div class="container">
@@ -93,7 +45,7 @@
 
 				<ul
 					class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-					<li><a href="/shopdetail" class="nav-link px-2 link-dark">상품목록</a></li>
+					<li><a href="/shopdetail/home" class="nav-link px-2 link-dark">상품목록</a></li>
 					<li><a href="/list" class="nav-link px-2 link-dark">게시판</a></li>
 					<li><a href="#" class="nav-link px-2 link-dark">STORY</a></li>
 
@@ -111,15 +63,26 @@
 					</a>
 					<ul class="dropdown-menu text-small"
 						aria-labelledby="dropdownUser1">
-						<li><a class="dropdown-item" href="#"><sec:authorize
+						<li><a class="dropdown-item" href="/my/index"><sec:authorize
 									access="isAuthenticated()">
 									<sec:authentication property="principal.username" />
+
 								</sec:authorize> <sec:authorize access="isAnonymous()">
 								</sec:authorize></a></li>
 						<li><sec:authorize access="isAuthenticated()">
 								<a class="dropdown-item" href="/customLogout"> <i
 									class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
 									Logout
+								</a>
+							</sec:authorize> <sec:authorize access="isAuthenticated()">
+								<a class="dropdown-item" href="/shopdetail/cartList"> <i
+									class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+									장바구니
+								</a>
+							</sec:authorize> <sec:authorize access="isAuthenticated()">
+								<a class="dropdown-item" href="/shopdetail/orderList"> <i
+									class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+									주문 리스트
 								</a>
 							</sec:authorize> <sec:authorize access="isAnonymous()">
 								<a class="dropdown-item" href="/customLogin"> <i
@@ -135,6 +98,12 @@
 								</i> sign Up
 								</a>
 
+							</sec:authorize> <sec:authorize access="hasRole('ROLE_ADMIN')">
+								<a class="dropdown-item" href="/admin/adminIndex"> <i
+									class="fas-fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400">
+
+								</i> 관리자 페이지
+								</a>
 							</sec:authorize></li>
 					</ul>
 				</div>
