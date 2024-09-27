@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shop.mapper.MemberMapper">
+
+	<resultMap type="com.shop.domain.AuthVO" id="authMap">
+		<result property="userid" column="userid" />
+		<result property="auth" column="auth" />
+	</resultMap>
+	<resultMap type="com.shop.domain.MemberVO" id="memberMap">
+		<id property="userid" column="userid" />
+		<result property="userid" column="userid" />
+		<result property="userpw" column="userpw" />
+		<result property="userName" column="username" />
+		<result property="useremail" column="useremail" />
+		<result property="useraddress" column="useraddress" />
+		<result property="userphoneNumber" column="userphoneNumber" />
+		<result property="regDate" column="regdate" />
+		<result property="updateDate" column="updatedate" />
+		<collection property="authList" resultMap="authMap" />
+	</resultMap>
+
+	<select id="read" resultMap="memberMap">
+		select
+		mem.userid, userpw, username
+		,useremail,
+		useraddress, userphoneNumber,
+		enabled, regdate, updatedate,
+		mem.auth
+		from
+		tbl_member mem
+		where
+		mem.userid=
+		#{userid}
+	</select>
+
+	<insert id="memberRegister">
+		insert into tbl_member
+		(userid,userpw,username,useremail,useraddress,userphonenumber) values(
+		#{userid} , #{userpw} , #{userName} ,
+		#{useremail},#{useraddress},#{userphoneNumber})
+
+	</insert>
+
+
+	<update id="updateMember">
+		update tbl_member set username=#{userName},
+		userpw=#{userpw}, useremail=#{useremail}, useraddress=#{useraddress},
+		userphonenumber=#{userphoneNumber}
+		where userid=#{userid}
+
+
+	</update>
+
+	<delete id="deleteMember">
+		delete from tbl_member where userid=#{userid}
+
+	</delete>
+
+
+	<select id="idCheck" resultType="int">
+		select
+		count(*) from tbl_member
+		where userid = #{userid}
+	</select>
+
+</mapper>
